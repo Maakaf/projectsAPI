@@ -1,11 +1,12 @@
 import { Octokit } from "@octokit/rest";
 import { readFile } from 'fs/promises';
-
+import { updateGist } from "./updateGist.js";
 import "dotenv/config";
+
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
-const fileData = await readFile('./projects.json', 'utf8');
+const fileData = await readFile('./public/projects.json', 'utf8');
 const projectData = JSON.parse(fileData);
 
 // Fetch data from GitHub API
@@ -75,6 +76,7 @@ export const getGithubData = async () => {
     );
 
     console.log("Data fetched from GitHub:", repositoriesData);
+    await updateGist(repositoriesData);
     return repositoriesData;
   } catch (error) {
     console.error("Error fetching data from GitHub:", error);

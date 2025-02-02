@@ -1,16 +1,15 @@
 import { Octokit } from "@octokit/rest";
-import { readFile } from 'fs/promises';
+import { readFile } from "fs/promises";
 import { updateGist } from "./updateGist.js";
 import "dotenv/config";
 
-
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GIST_URL = process.env.GIST_URL;
 
-const fileData = await readFile('./public/projects.json', 'utf8');
+const fileData = await readFile("./public/projects.json", "utf8");
 const projectData = JSON.parse(fileData);
 
-// Fetch data from GitHub API
-export const getGithubData = async () => {
+const getUpdatedData = async () => {
   try {
     const octokit = new Octokit({
       auth: GITHUB_TOKEN,
@@ -61,24 +60,34 @@ export const getGithubData = async () => {
           };
         } catch (error) {
           console.error("Error fetching repository data:", error);
-          return   {
-            name: 'N/A',
-            language: 'N/A',
-            html_url: 'N/A',
-            description: 'N/A',
+          return {
+            name: "N/A",
+            language: "N/A",
+            html_url: "N/A",
+            description: "N/A",
             stargazers_count: 0,
-            last_commit: 'N/A',
-            short_description: 'N/A',
-            discord_link: 'N/A'
+            last_commit: "N/A",
+            short_description: "N/A",
+            discord_link: "N/A",
           };
         }
       })
     );
 
     console.log("Data fetched from GitHub:", repositoriesData);
-    await updateGist(repositoriesData);
     return repositoriesData;
   } catch (error) {
     console.error("Error fetching data from GitHub:", error);
   }
+};
+
+// Fetch data from GitHub API
+export const getGithubData = async () => {
+  const {lastUpdate, currentData} = await fetch(GIST_URL).then((response) => response.json());
+  if (new Date() - new Date(lastUpdate) > 1000 * 60 * 60 * 24) {
+    const updatedData = await getUpdatedData();
+    await updateGist(updatedData);
+    return updatedData;
+  }
+  return currentData;
 };

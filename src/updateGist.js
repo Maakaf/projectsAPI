@@ -3,7 +3,7 @@ import "dotenv/config";
 const GITHUB_GIST_TOKEN = process.env.GITHUB_GIST_TOKEN;
 const GIST_ID = process.env.GIST_ID;
 
-export const updateGist = async (projectsData) => {
+export const updateGist = async (currentData) => {
   console.log("GIST_ID:", GIST_ID, "GITHUB_GIST_TOKEN:", GITHUB_GIST_TOKEN);
   const response = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
     method: "PATCH",
@@ -15,7 +15,7 @@ export const updateGist = async (projectsData) => {
     body: JSON.stringify({
       files: {
         "projectsData.json": {
-          content: JSON.stringify(projectsData),
+          content: JSON.stringify({lastUpdate: new Date, currentData}),
         },
       },
     }),

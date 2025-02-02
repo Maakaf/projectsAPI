@@ -1,5 +1,7 @@
 // Import the Express module
-const express = require('express');
+
+import express from 'express';
+import {getGithubData} from './getGithubData.js';
 
 // Create an Express application
 const app = express();
@@ -7,9 +9,10 @@ const app = express();
 // Define a port (use environment variable or default to 3000)
 const port = process.env.PORT || 3000;
 
+
 // Define a route for the root URL ("/")
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
+app.get('/', async (req, res) => {
+  res.send(await getGithubData());
 });
 
 // Start the server and listen on the specified port

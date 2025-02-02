@@ -12,7 +12,7 @@ const corsOptions = {
   origin: 'http://localhost:4321/', // Allow only this origin
   optionsSuccessStatus: 200, // Some legacy browsers choke on 204
 };
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Define a port (use environment variable or default to 3000)
 const port = process.env.PORT || 3000;

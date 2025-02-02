@@ -1,8 +1,12 @@
 import { Octokit } from "@octokit/rest";
-import projectData from "./projects.json" assert { type: "json" };
+import { readFile } from 'fs/promises';
+
 import "dotenv/config";
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
+const fileData = await readFile('./projects.json', 'utf8');
+const projectData = JSON.parse(fileData);
 
 // Fetch data from GitHub API
 export const getGithubData = async () => {
